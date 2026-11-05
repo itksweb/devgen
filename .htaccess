@@ -1,25 +1,34 @@
 # =====================================================================
-# DEVGENIUS ACADEMY - APACHE CONFIGURATION & SECURITY HARDENING
-# Compatible with cPanel Shared Hosting & Apache 2.4+
+# DEVGENIUS ACADEMY - APACHE HARDENING & CONFIGURATION
+# 100% Compatible with both cPanel and DirectAdmin (Apache, LiteSpeed, PHP-FPM)
 # =====================================================================
 
 # 1. Disable Directory Indexing
 Options -Indexes
 
-# 2. Deny Direct Web Access to Sensitive Files
-<FilesMatch "^(\.env|\.git|\.htaccess|database\.sql|composer\.json|README\.md)">
-    Require all denied
+# 2. Deny Direct Web Access to Sensitive System Files
+<FilesMatch "^(\.env|\.git|\.htaccess|\.user\.ini|database\.sql|composer\.json|README\.md|install\.lock)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
 </FilesMatch>
 
 # 3. Protect Database Configuration File
 <Files "config.php">
-    # Deny direct browser request to config.php (can only be included by PHP scripts)
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
 </Files>
 
-# 4. UTF-8 Character Encoding
+# 4. Default Character Encoding
 AddDefaultCharset UTF-8
 
 # 5. Security Response Headers
@@ -30,20 +39,27 @@ AddDefaultCharset UTF-8
     Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# 6. Upload Security - Prevent Script Execution in Uploads
+# 6. Upload Folder Hardening - Prevent Execution of Uploaded Scripts
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
     # Block direct execution of scripts inside uploads folder
-    RewriteRule ^uploads/.*\.(php|php3|php4|php5|php7|php8|phtml|pl|py|cgi|sh)$ - [F,L]
+    RewriteRule ^uploads/.*\.(php|php3|php4|php5|php7|php8|phtml|pl|py|cgi|sh|bash|exe)$ - [F,L]
 </IfModule>
 
-# 7. PHP 8.1 Performance & File Upload Limits (where host allows php_value in .htaccess)
+# 7. PHP Values - Guarded safely so PHP-FPM / LiteSpeed servers never crash with 500 error
+# Note: For PHP-FPM and LiteSpeed on DirectAdmin and cPanel, settings are defined in .user.ini
+<IfModule mod_php.c>
+    php_value upload_max_filesize 25M
+    php_value post_max_size 30M
+    php_value max_execution_time 300
+    php_value memory_limit 128M
+</IfModule>
+
 <IfModule mod_php8.c>
     php_value upload_max_filesize 25M
     php_value post_max_size 30M
     php_value max_execution_time 300
-    php_value max_input_time 300
     php_value memory_limit 128M
 </IfModule>

@@ -120,11 +120,11 @@ export const Header: React.FC = () => {
 
             <button
               onClick={() => setIsCpanelModalOpen(true)}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#082592] hover:bg-[#1746C5] text-white font-medium transition-colors"
-              title="Download database.sql, .htaccess & full PHP source for cPanel"
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#082592] hover:bg-[#1746C5] text-white font-medium transition-colors cursor-pointer"
+              title="Deployment guide, install.php, database.sql & PHP files for cPanel & DirectAdmin"
             >
               <FolderDown className="w-3.5 h-3.5 text-[#F28C18]" />
-              <span>cPanel Deployment Hub</span>
+              <span>Hosting Hub (cPanel / DirectAdmin)</span>
             </button>
           </div>
         </div>
@@ -199,10 +199,10 @@ export const Header: React.FC = () => {
           </button>
           <button
             onClick={() => setIsCpanelModalOpen(true)}
-            className="text-slate-600 hover:text-[#082592] flex items-center gap-1.5"
+            className="text-slate-600 hover:text-[#082592] flex items-center gap-1.5 cursor-pointer"
           >
-            <span>cPanel Files</span>
-            <span className="text-[10px] font-bold text-white bg-[#082592] px-1.5 py-0.2 rounded">PHP</span>
+            <span>cPanel / DirectAdmin</span>
+            <span className="text-[10px] font-bold text-white bg-[#082592] px-1.5 py-0.2 rounded">PHP 8.1+</span>
           </button>
         </nav>
 

@@ -1,0 +1,6 @@
+{
+  "name": "DevGenius Academy",
+  "description": "Professional e-learning website, student registration portal, and course management system for DevGenius Academy.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

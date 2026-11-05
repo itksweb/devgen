@@ -1,0 +1,49 @@
+# =====================================================================
+# DEVGENIUS ACADEMY - APACHE CONFIGURATION & SECURITY HARDENING
+# Compatible with cPanel Shared Hosting & Apache 2.4+
+# =====================================================================
+
+# 1. Disable Directory Indexing
+Options -Indexes
+
+# 2. Deny Direct Web Access to Sensitive Files
+<FilesMatch "^(\.env|\.git|\.htaccess|database\.sql|composer\.json|README\.md)">
+    Require all denied
+</FilesMatch>
+
+# 3. Protect Database Configuration File
+<Files "config.php">
+    # Deny direct browser request to config.php (can only be included by PHP scripts)
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</Files>
+
+# 4. UTF-8 Character Encoding
+AddDefaultCharset UTF-8
+
+# 5. Security Response Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# 6. Upload Security - Prevent Script Execution in Uploads
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Block direct execution of scripts inside uploads folder
+    RewriteRule ^uploads/.*\.(php|php3|php4|php5|php7|php8|phtml|pl|py|cgi|sh)$ - [F,L]
+</IfModule>
+
+# 7. PHP 8.1 Performance & File Upload Limits (where host allows php_value in .htaccess)
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 25M
+    php_value post_max_size 30M
+    php_value max_execution_time 300
+    php_value max_input_time 300
+    php_value memory_limit 128M
+</IfModule>
